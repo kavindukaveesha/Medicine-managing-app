@@ -7,6 +7,16 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomWidget(
-        isShowback: false, title: 'Hello Kavindu! Welcome', child: Column());
+        isShowback: false,
+        title: 'Hello Kavindu! Welcome',
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(
+                  'I have register to firebase.now you can start develop your pages.After finishing comit and pull to test branch'),
+            )
+          ],
+        ));
   }
 }
