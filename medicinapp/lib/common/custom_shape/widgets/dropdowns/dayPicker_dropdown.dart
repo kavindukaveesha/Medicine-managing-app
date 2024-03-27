@@ -1,26 +1,28 @@
 import 'package:flutter/material.dart';
 
-class Daypicker extends StatefulWidget {
-  const Daypicker({
+class DayPickerDropdown extends StatefulWidget {
+  const DayPickerDropdown({
     Key? key,
     required this.listName,
-    required this.selectedItem,
   }) : super(key: key);
 
   final List<String> listName;
-  final String selectedItem;
 
   @override
-  _DaypickerState createState() => _DaypickerState();
+  _DayPickerDropdownState createState() => _DayPickerDropdownState();
 }
 
-class _DaypickerState extends State<Daypicker> {
+class _DayPickerDropdownState extends State<DayPickerDropdown> {
   late String _selectedItem;
 
   @override
   void initState() {
     super.initState();
-    _selectedItem = widget.selectedItem;
+    // Get the current day of the week and set it as the initial value
+    final currentDay = DateTime.now().weekday;
+    _selectedItem =
+        widget.listName[currentDay - 1]; // Adjust index to start from 0
+    // Notify the parent widget about the initial selection
   }
 
   @override
@@ -38,9 +40,10 @@ class _DaypickerState extends State<Daypicker> {
           iconSize: 30,
           value: _selectedItem,
           style: Theme.of(context).textTheme.headlineMedium,
-          onChanged: (value) {
+          onChanged: (newValue) {
             setState(() {
-              _selectedItem = value!;
+              _selectedItem = newValue!;
+              print(_selectedItem);
             });
           },
           items: widget.listName.map((category) {

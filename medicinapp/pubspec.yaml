@@ -50,6 +50,5 @@ flutter_lints: ^2.0.0
 
 flutter:
   uses-material-design: true
-  # assets:
-  #   - assets/products/
-   
+  assets:
+    - assets/medication_images/

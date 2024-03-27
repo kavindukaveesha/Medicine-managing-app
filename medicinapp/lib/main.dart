@@ -1,9 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:medicinapp/features/pages/home_page/home_page.dart';
 import 'package:medicinapp/firebase_options.dart';
-import 'package:medicinapp/test.dart';
-
 import 'utils/theme/theme.dart';
 
 void main() async {
@@ -12,7 +11,6 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const App());
 }
-
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -25,7 +23,7 @@ class App extends StatelessWidget {
           themeMode: ThemeMode.system,
           theme: TAppTheme.lightTheme,
           darkTheme: TAppTheme.darkTheme,
-          home: Home()),
+          home: HomePage()),
     );
   }
 }
