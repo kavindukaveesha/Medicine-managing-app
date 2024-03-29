@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import '../../../../utils/constants/mediaQuery.dart';
 
 class CustomContainer extends StatelessWidget {
-  const CustomContainer({super.key, required this.child});
+  const CustomContainer({super.key, required this.child, required this.width});
   final Widget child;
+  final double width;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: MediaQueryUtils.getWidth(context) * .9,
+        alignment: Alignment.center,
+        width: width,
         decoration: BoxDecoration(
           color: Colors.white, // Set the background color to white
           borderRadius: BorderRadius.circular(10), // Set the border radius

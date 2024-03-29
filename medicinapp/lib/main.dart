@@ -1,8 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:medicinapp/features/pages/home_page/home_page.dart';
+import 'package:medicinapp/features/authentication/screens/log_in_screen/log_in_screen.dart';
 import 'package:medicinapp/firebase_options.dart';
+import 'features/authentication/screens/splash_screen/splash_screen.dart';
 import 'utils/theme/theme.dart';
 
 void main() async {
@@ -22,8 +23,7 @@ class App extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           themeMode: ThemeMode.system,
           theme: TAppTheme.lightTheme,
-          darkTheme: TAppTheme.darkTheme,
-          home: HomePage()),
+          home: SplashScreen()),
     );
   }
 }

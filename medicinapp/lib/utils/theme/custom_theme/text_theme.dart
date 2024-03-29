@@ -75,7 +75,7 @@ class TTextTheme {
         color: Colors.white,
         fontFamily: 'Montserrat'),
     headlineSmall: const TextStyle().copyWith(
-        fontSize: 18.0,
+        fontSize: 20.0,
         fontWeight: FontWeight.w600,
         color: Colors.white,
         fontFamily: 'Montserrat'),

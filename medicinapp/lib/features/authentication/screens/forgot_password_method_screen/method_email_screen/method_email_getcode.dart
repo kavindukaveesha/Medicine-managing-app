@@ -1,141 +1,107 @@
-// import 'dart:async';
+import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:medicinapp/common/custom_shape/widgets/snack_bar/snack_bar.dart';
+import 'package:medicinapp/common/custom_shape/widgets/text_inputs/text_input_field.dart';
+import 'package:medicinapp/features/authentication/screens/log_in_screen/log_in_screen.dart';
+import 'package:medicinapp/utils/constants/image_strings.dart';
+import 'package:medicinapp/utils/constants/text_strings.dart';
+import 'package:medicinapp/utils/validators/validation.dart';
+import '../../../../../utils/constants/mediaQuery.dart';
 
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import '../../../../../../utils/constants/image_strings.dart';
-// import '../../../../../utils/constants/mediaQuery.dart';
-// import '../../../../../utils/constants/text_strings.dart';
+class MethodEmail extends StatelessWidget {
+  const MethodEmail({Key? key});
 
-// // Email validation function
-// bool isValidEmail(String email) {
-//   final RegExp emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-//   return emailRegex.hasMatch(email);
-// }
+  @override
+  Widget build(BuildContext context) {
+    final TextEditingController _emailController = TextEditingController();
 
-// class MethodEmail extends StatelessWidget {
-//   const MethodEmail({Key? key});
+    // Function to handle password reset
+    Future<void> passwordReset() async {
+      String email = _emailController.text.trim();
 
-//   @override
-//   Widget build(BuildContext context) {
-//     final TextEditingController _emailController = TextEditingController();
+      // Email validation
+      if (!Validator.isValidEmail(email)) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return const AlertDialog(
+              content:
+                  Text('Invalid email format. Please enter a valid email.'),
+            );
+          },
+        );
+      }
+      try {
+        // Send password reset email
+        await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
 
-//     // Function to handle password reset
-//     Future<void> passwordReset() async {
-//       String email = _emailController.text.trim();
+        SnackbarHelper.showSnackbar(
+            title: 'Password Recovery',
+            message: 'Password reset link sent. Check your email.');
 
-//       // Email validation
-//       if (!isValidEmail(email)) {
-//         showDialog(
-//           context: context,
-//           builder: (context) {
-//             return const AlertDialog(
-//               content:
-//                   Text('Invalid email format. Please enter a valid email.'),
-//             );
-//           },
-//         );
-//         // } else if (email != currentUser.email) {
-//         //   showDialog(
-//         //     context: context,
-//         //     builder: (context) {
-//         //       return const AlertDialog(
-//         //         content:
-//         //             Text('Entered email does not match with registered email.'),
-//         //       );
-//         //     },
-//         //   );
-//         // } else {
-//       }
-//       try {
-//         // Send password reset email
-//         await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+        // Redirect to login page after 3 seconds
+        Timer(const Duration(seconds: 4), () {
+          Get.to(() => const LogInScreen());
+        });
+      } on FirebaseException catch (e) {
+        // Show error dialog if FirebaseException occurs
+        SnackbarHelper.showSnackbar(
+            backgroundColor: Colors.red, title: 'Eoorr', message: e.toString());
+      }
+    }
 
-//         // Show success dialog
-//         showDialog(
-//           context: context,
-//           builder: (context) {
-//             return const AlertDialog(
-//               content: Text('Password reset link sent. Check your email.'),
-//             );
-//           },
-//         );
-
-//         // Redirect to login page after 3 seconds
-//         Timer(const Duration(seconds: 3), () {
-//           Get.to(() => const LogIn());
-//         });
-//       } on FirebaseException catch (e) {
-//         // Show error dialog if FirebaseException occurs
-//         showDialog(
-//           context: context,
-//           builder: (context) {
-//             return AlertDialog(
-//               content: Text(e.message.toString()),
-//             );
-//           },
-//         );
-//       }
-//     }
-
-//     return Scaffold(
-//       body: SingleChildScrollView(
-//         child: Center(
-//           child: CircularDesignContainer(
-//             backText: 'Back',
-//             child: Padding(
-//               padding: const EdgeInsets.all(10.0),
-//               child: Column(
-//                 children: [
-//                   SizedBox(height: MediaQueryUtils.getHeight(context) * .3),
-//                   // Header text
-//                   Center(
-//                     child: Text(
-//                       EcoTexts.megHeader,
-//                       style: Theme.of(context).textTheme.headlineMedium,
-//                       textAlign: TextAlign.center,
-//                     ),
-//                   ),
-//                   // Eco image
-//                   Image(
-//                     image: const AssetImage(
-//                       TImages.ecoIcon,
-//                     ),
-//                     height: MediaQueryUtils.getHeight(context) * .3,
-//                   ),
-//                   SizedBox(
-//                     height: MediaQueryUtils.getHeight(context) * .005,
-//                   ),
-//                   // Email input field
-//                   EcoInputField(
-//                     controller: _emailController,
-//                     icon: Icons.mail,
-//                     labelText: 'Enter your email address',
-//                   ),
-//                   SizedBox(
-//                     height: MediaQueryUtils.getHeight(context) * .025,
-//                   ),
-//                   // Send code button
-//                   SizedBox(
-//                     width: MediaQueryUtils.getWidth(context) * .9,
-//                     child: ElevatedButton(
-//                       onPressed: passwordReset,
-//                       child: const Text(
-//                         'Send Code',
-//                         style: TextStyle(
-//                           fontSize: 20,
-//                           fontWeight: FontWeight.bold,
-//                         ),
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            children: [
+              SizedBox(height: MediaQueryUtils.getHeight(context) * .1),
+              // Header text
+              Center(
+                child: Text(
+                  MedTexts.megHeader,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              // Eco image
+              Image(
+                image: const AssetImage(MediImages.img5),
+                height: MediaQueryUtils.getHeight(context) * .3,
+              ),
+              SizedBox(
+                height: MediaQueryUtils.getHeight(context) * .005,
+              ),
+              // Email input field
+              InputField(
+                prefixIcon: Icons.mail,
+                controller: _emailController,
+                labelText: 'Enter your email address',
+              ),
+              SizedBox(
+                height: MediaQueryUtils.getHeight(context) * .025,
+              ),
+              // Send code button
+              SizedBox(
+                width: MediaQueryUtils.getWidth(context) * .9,
+                child: ElevatedButton(
+                  onPressed: passwordReset,
+                  child: const Text(
+                    'Send Code',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

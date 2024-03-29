@@ -9,12 +9,14 @@ class DataDisplayCard extends StatelessWidget {
     super.key,
     required this.labelText,
     required this.detailtext,
-    required this.onTapEdit,
     this.height,
+    this.edit,
+    this.onTapEdit,
   });
   final String labelText;
   final String detailtext;
-  final VoidCallback onTapEdit;
+  final String? edit;
+  final VoidCallback? onTapEdit;
   final double? height;
 
   @override
@@ -45,8 +47,8 @@ class DataDisplayCard extends StatelessWidget {
                     ),
                     GestureDetector(
                         onTap: onTapEdit,
-                        child: const Text(
-                          'Edit',
+                        child: Text(
+                          edit ?? '',
                           style: TextStyle(
                               fontSize: 15,
                               color: TColors.appPrimaryColor,

@@ -1,4 +1,4 @@
-class EcoTexts {
+class MedTexts {
   // Bottom texts
   static const String bttmHome = "Home";
   static const String bttmServices = "Serveices";

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:medicinapp/utils/constants/colors.dart';
 
 class InputField extends StatelessWidget {
   const InputField({
@@ -9,8 +9,11 @@ class InputField extends StatelessWidget {
     this.validator,
     this.keyboardtype,
     this.maxLength,
-    this.maxLines, this.onTapDate, this.suffixIconButton,
-    
+    this.maxLines,
+    this.onTapDate,
+    this.suffixIconButton,
+    this.prefixIcon,
+    this.borderEnabled = true, // Add this line with a default value
   }) : super(key: key);
 
   final String labelText;
@@ -21,6 +24,8 @@ class InputField extends StatelessWidget {
   final int? maxLines;
   final VoidCallback? onTapDate;
   final IconButton? suffixIconButton;
+  final IconData? prefixIcon;
+  final bool borderEnabled; // Add this line
 
   @override
   Widget build(BuildContext context) {
@@ -28,99 +33,55 @@ class InputField extends StatelessWidget {
 
     return Container(
       margin: EdgeInsets.only(bottom: 15),
-      width: mediaQueryWidth * 0.8,
+      width: mediaQueryWidth * 0.85,
       child: TextFormField(
+        
         maxLines: maxLines,
         maxLength: maxLength,
         keyboardType: keyboardtype,
         validator: validator,
         controller: controller,
         decoration: InputDecoration(
-          labelText: labelText, 
+          prefixIcon: Icon(prefixIcon),
+          labelText: labelText,
+          border: borderEnabled
+              ? OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: BorderSide(color: Colors.grey))
+              : UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black),
+                ),
+          enabledBorder: borderEnabled
+              ? OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: BorderSide(color: Colors.grey))
+              : UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.black),
+                ),
+          focusedBorder: borderEnabled
+              ? OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: BorderSide(color: TColors.appPrimaryColor))
+              : UnderlineInputBorder(
+                  borderSide: BorderSide(color: TColors.appPrimaryColor),
+                ),
+          errorBorder: borderEnabled
+              ? OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: BorderSide(color: Colors.red))
+              : UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red),
+                ),
+          focusedErrorBorder: borderEnabled
+              ? OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: BorderSide(color: Colors.red))
+              : UnderlineInputBorder(
+                  borderSide: BorderSide(color: Colors.red),
+                ),
           suffixIcon: suffixIconButton,
         ),
       ),
     );
   }
 }
-
-// class AddSpecialNotePage extends StatelessWidget {
-//   const AddSpecialNotePage({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final List<String> labels = [
-//       'Vaccination Name',
-//       'Vaccination Date',
-//       'Vaccination Dose',
-//       'Allergies',
-//       'Prior Surgeries',
-//       'Prior Surgery Date',
-//     ];
-
-//     void _selectDate() async {
-//       final DateTime? picked = await showDatePicker(
-//         context: context,
-//         initialDate: DateTime.now(),
-//         firstDate: DateTime(2020),
-//         lastDate: DateTime.now(),
-//       );
-//       if (picked != null) {
-//         // Handle the selected date here
-//         print('Selected date: $picked');
-//       }
-//     }
-
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Add Your Special Notes Here....'),
-//       ),
-//       body: Padding(
-//         padding: EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Text(
-//               'Special Note',
-//               style: Theme.of(context).textTheme.headline6,
-//             ),
-//             SizedBox(height: 20),
-//             Column(
-//               children: [
-//                 for (var label in labels)
-//                   InputField(
-//                     labelText: label,
-//                     onTapDate: () {
-//                       if (labels.indexOf(label) == 1 || labels.indexOf(label) == 5) {
-//                         _selectDate();
-//                       }
-//                     },
-//                     suffixIconButton: labels.indexOf(label) == 1 || labels.indexOf(label) == 5
-//                         ? IconButton(
-//                             icon: Icon(Icons.calendar_today),
-//                             onPressed: _selectDate,
-//                           )
-//                         : IconButton(
-//                             icon: Icon(Icons.add),
-//                             onPressed: () {
-//                               // Handle other suffix icon button actions
-//                             },
-//                           ),
-//                   ),
-//                 SizedBox(height: 20),
-//                 Center(
-//                   child: ElevatedButton(
-//                     onPressed: () {
-//                       // Handle add button press
-//                     },
-//                     child: Text('Add'),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
