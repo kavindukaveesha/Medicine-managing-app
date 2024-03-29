@@ -132,16 +132,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   width: MediaQueryUtils.getWidth(context) * .4,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      _signUpController.register(
-                                          nameController.text,
-                                          emailController.text,
-                                          passwordController.text,
-                                          conformpasswordController.text,
-                                          '',
-                                          '',
-                                          '',
-                                          '',
-                                          context);
+                                      if (passwordController.text.trim() ==
+                                          conformpasswordController.text
+                                              .trim()) {
+                                        _signUpController.sendVerificationEmail(
+                                            nameController.text.trim(),
+                                            emailController.text.trim(),
+                                            passwordController.text.trim(),
+                                            '',
+                                            '',
+                                            '',
+                                            '',
+                                            context);
+                                      }
                                     },
                                     child: Text('SignUp'),
                                   ),

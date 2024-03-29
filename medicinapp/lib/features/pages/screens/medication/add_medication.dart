@@ -153,7 +153,7 @@ class _MyButtonsRowState extends State<MyButtonsRow> {
     int inventoryAmount = int.parse(inventoryAmountController.text.trim());
     int refillAmount = int.parse(refillController.text.trim());
     String medName = medNameController.text.trim();
-    int medStrength = int.parse(medicineStrengthController.text.trim());
+    String medStrength = medicineStrengthController.text.trim();
     List<String> daysOfWeek = selectedDays;
 
     try {
@@ -397,71 +397,3 @@ class _RoundButtonState extends State<RoundButton> {
   }
 }
 
-// class DP1 extends StatefulWidget {
-//   @override
-//   _DP1State createState() => _DP1State();
-// }
-
-// class _DP1State extends State<DP1> {
-//   String _selectedOption = '';
-//   TextEditingController _textEditingController = TextEditingController();
-
-//   List<String> _dropdownOptions = [
-//     'Option 1',
-//     'Option 2',
-//     'Option 3',
-//     'Option 4'
-//   ];
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('TextInput & Dropdown Example'),
-//       ),
-//       body: Padding(
-//         padding: EdgeInsets.all(20.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.stretch,
-//           children: [
-//             TextField(
-//               controller: _textEditingController,
-//               decoration: InputDecoration(
-//                 labelText: 'Enter Text',
-//                 border: OutlineInputBorder(),
-//               ),
-//             ),
-//             SizedBox(height: 20.0),
-//             DropdownButtonFormField(
-//               value: _selectedOption,
-//               items: _dropdownOptions.map((option) {
-//                 return DropdownMenuItem(
-//                   value: option,
-//                   child: Text(option),
-//                 );
-//               }).toList(),
-//               onChanged: (value) {
-//                 setState(() {
-//                   _selectedOption = value!;
-//                 });
-//               },
-//               decoration: InputDecoration(
-//                 labelText: 'Select Option',
-//                 border: OutlineInputBorder(),
-//               ),
-//             ),
-//             SizedBox(height: 20.0),
-//             GestureDetector(
-//               onTap: () {
-//                 // Handle button press here
-//                 print('Entered Text: ${_textEditingController.text}');
-//                 print('Selected Option: $_selectedOption');
-//               },
-//               child: Text('Submit'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

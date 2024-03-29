@@ -55,6 +55,16 @@ class _MedicalInfoState extends State<MedicalInfo> {
     return userDocRef.collection('appointments').snapshots();
   }
 
+  Stream<QuerySnapshot> getuserMedications() {
+    // Reference the current user's document
+    DocumentReference userDocRef = FirebaseFirestore.instance
+        .collection('app_user')
+        .doc(_currentUser!.email);
+
+    // Get user's appointments from Firestore
+    return userDocRef.collection('medications').snapshots();
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Widget> rows = []; // Initialize rows list
@@ -107,7 +117,7 @@ class _MedicalInfoState extends State<MedicalInfo> {
                               style: Theme.of(context)
                                   .textTheme
                                   .headlineSmall!
-                                  .copyWith(color: TColors.textSecondary),
+                                  .copyWith(color: TColors.appPrimaryColor),
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(
@@ -128,9 +138,25 @@ class _MedicalInfoState extends State<MedicalInfo> {
                     },
                   ),
                 ),
+
                 SizedBox(
                   height: MediaQueryUtils.getHeight(context) * .04,
                 ),
+                // This is appointment details
+                InfoStreamCustomRow(
+                    stream: getUserAppointments(),
+                    field1: 'doctorName',
+                    field2: 'appointmentDate',
+                    title: 'Appointments'),
+                // This is appointment details
+
+                // This is medications details
+                InfoStreamCustomRow(
+                    stream: getuserMedications(),
+                    field1: 'medName',
+                    field2: 'medicineStrength',
+                    title: 'Medicine Details'),
+                // This is medications details
                 // This is vaccinations details
                 InfoStreamCustomRow(
                     stream: getUserspecialNotesDetails(),
@@ -156,11 +182,11 @@ class _MedicalInfoState extends State<MedicalInfo> {
                       style: Theme.of(context)
                           .textTheme
                           .headlineSmall!
-                          .copyWith(color: TColors.textSecondary),
+                          .copyWith(color: TColors.appPrimaryColor),
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 40, vertical: 5),
+                          horizontal: 10, vertical: 5),
                       child: SizedBox(
                         height: 100,
                         child: StreamBuilder<QuerySnapshot>(
@@ -185,15 +211,9 @@ class _MedicalInfoState extends State<MedicalInfo> {
                                 var item = snapshot.data!.docs[index];
                                 String allegics = item['Allergies'];
 
-                                return Text(
-                                  '$allegics',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge!
-                                      .copyWith(
-                                          color:
-                                              Color.fromARGB(255, 22, 37, 44)),
-                                );
+                                return Text('$allegics',
+                                    style:
+                                        Theme.of(context).textTheme.bodyLarge!);
                               },
                             );
                           },
@@ -204,13 +224,6 @@ class _MedicalInfoState extends State<MedicalInfo> {
                 ),
 
                 // This is Alagics details
-                // This is Prior Surgeries details
-                InfoStreamCustomRow(
-                    stream: getUserAppointments(),
-                    field1: 'doctorName',
-                    field2: 'appointmentDate',
-                    title: 'Appointments'),
-                // This is Prior Surgeries details
               ],
             ),
           ),
@@ -222,27 +235,26 @@ class _MedicalInfoState extends State<MedicalInfo> {
 }
 
 class TextRow extends StatelessWidget {
-  const TextRow({super.key, required this.label, required this.details});
+  const TextRow({Key? key, required this.label, required this.details})
+      : super(key: key);
+
   final String label, details;
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment:
+          MainAxisAlignment.spaceBetween, // Adjust main axis alignment
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(label,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge!
-                    .copyWith(color: Color.fromARGB(255, 22, 37, 44)))
-          ],
+        Text(
+          label,
+          style: Theme.of(context)
+              .textTheme
+              .bodyLarge!
+              .copyWith(color: Color.fromARGB(255, 22, 37, 44)),
         ),
         SizedBox(
-          width: MediaQueryUtils.getWidth(context) * .1,
+          width: MediaQuery.of(context).size.width * .2, // Adjust width
         ),
         Text(
           details,
@@ -276,11 +288,11 @@ class InfoStreamCustomRow extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '$title',
+          title,
           style: Theme.of(context)
               .textTheme
               .headlineSmall!
-              .copyWith(color: TColors.textSecondary),
+              .copyWith(color: TColors.appPrimaryColor), // Adjust text color
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -290,28 +302,24 @@ class InfoStreamCustomRow extends StatelessWidget {
               stream: stream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator(); // Show a loading indicator while data is being fetched
+                  return CircularProgressIndicator();
                 }
                 if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 }
                 if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return Text(
-                      'No data available'); // Show a message if there is no data
+                  return Text('No data available');
                 }
-                // If there is data available, build a ListView using the data
-                return ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context, index) {
-                    var item = snapshot.data!.docs[index];
-                    String vacName = item[field1];
-                    String vacdate = item[field2];
-                    return Column(
-                      children: [
-                        TextRow(label: vacName, details: vacdate),
-                      ],
-                    );
-                  },
+                return SizedBox(
+                  child: ListView.builder(
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      var item = snapshot.data!.docs[index];
+                      String vacName = item[field1];
+                      String vacDate = item[field2];
+                      return TextRow(label: vacName, details: vacDate);
+                    },
+                  ),
                 );
               },
             ),

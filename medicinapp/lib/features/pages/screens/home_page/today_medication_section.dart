@@ -58,7 +58,7 @@ class TodayMedicationSection extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('No appointments available for ${selectedDay}.'),
+                          Text('No medicines available for ${selectedDay}.'),
                           ElevatedButton(
                               onPressed: () {
                                 Get.to(() => AddMedication());

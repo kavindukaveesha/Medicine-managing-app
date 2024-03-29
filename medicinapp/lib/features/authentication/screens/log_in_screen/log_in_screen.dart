@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:medicinapp/features/authentication/screens/forgot_password_method_screen/method_email_screen/method_email_getcode.dart';
+import 'package:medicinapp/features/authentication/screens/forgot_password_method_screen/method_email_getcode.dart';
 import 'package:medicinapp/utils/constants/image_strings.dart';
 import 'package:medicinapp/utils/constants/mediaQuery.dart';
 
 import '../../../../common/custom_shape/widgets/text_inputs/text_input_field.dart';
 import '../../controller/sign_in_controller.dart';
-import '../forget_password_screen/change_password_form/change_password.dart';
 import '../sign_up_screen/sign_up_screen.dart';
 
 class LogInScreen extends StatefulWidget {

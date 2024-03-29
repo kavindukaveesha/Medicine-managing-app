@@ -137,7 +137,7 @@ class _TodayoppintmentSectionState extends State<TodayoppintmentSection> {
                     String doctorName = appointmentData['doctorName'];
                     String date = appointmentData['appointmentDate'];
                     String time = appointmentData['appointmentTime'];
-                    String location = appointmentData['day'];
+                    String location = appointmentData['appointmentLocation'];
                     int number =
                         int.parse(appointmentData['appointmentNumber']);
                     String appointmentId = appointmentData.id;
@@ -173,7 +173,7 @@ class _TodayoppintmentSectionState extends State<TodayoppintmentSection> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Image.asset(
-                      MediImages.m4,
+                      MediImages.m5,
                       height: 50,
                       width: 50,
                       fit: BoxFit.cover,

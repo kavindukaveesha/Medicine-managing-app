@@ -7,19 +7,44 @@ import '../../../../utils/constants/text_strings.dart';
 import '../../controller/sign_up_controller.dart';
 
 class VerificationScreen extends StatelessWidget {
-  const VerificationScreen({super.key});
+  const VerificationScreen({
+    Key? key, // Added Key? for proper initialization
+    required this.fullName,
+    required this.email,
+    required this.gender,
+    required this.age,
+    required this.language,
+    required this.country,
+    required this.password,
+    required this.context,
+  }) : super(key: key); // Fixed super call
+
+  final String fullName;
+  final String email;
+  final String password;
+  final String gender;
+  final String age;
+  final String language;
+  final String country;
+  final BuildContext context;
 
   @override
   Widget build(BuildContext context) {
     final SignUpController controller = Get.put(SignUpController());
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: () async {
+        // Prevent back navigation
+        return false;
+      },
+      child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
           leading: IconButton(
-              onPressed: () {
-                Get.back();
-              },
-              icon: Icon(Icons.arrow_back_ios)),
+            onPressed: () {
+              // Do nothing on back button press
+            },
+            icon: Icon(Icons.arrow_back_ios),
+          ),
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -77,7 +102,10 @@ class VerificationScreen extends StatelessWidget {
                 SizedBox(
                   width: MediaQueryUtils.getWidth(context) * .9,
                   child: ElevatedButton(
-                    onPressed: controller.verifyUser,
+                    onPressed: () {
+                      controller.verifyUser(fullName, email, gender, age,
+                          language, country, password, context);
+                    },
                     child: const Text(
                       'Continue',
                       style: TextStyle(
@@ -90,6 +118,8 @@ class VerificationScreen extends StatelessWidget {
               ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

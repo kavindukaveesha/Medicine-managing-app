@@ -33,17 +33,11 @@ class SplashScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              'Welcome',
-              style: TextStyle(
-                color: Colors.blue,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            Text('MedMate', style: Theme.of(context).textTheme.headlineSmall),
             SizedBox(height: 20),
             Image.asset(
-              MediImages.img1,
-              height: 20,
+              MediImages.img3,
+              height: 40,
             ),
           ],
         ),

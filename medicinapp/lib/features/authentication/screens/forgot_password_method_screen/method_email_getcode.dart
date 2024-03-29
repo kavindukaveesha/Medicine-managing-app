@@ -9,7 +9,7 @@ import 'package:medicinapp/features/authentication/screens/log_in_screen/log_in_
 import 'package:medicinapp/utils/constants/image_strings.dart';
 import 'package:medicinapp/utils/constants/text_strings.dart';
 import 'package:medicinapp/utils/validators/validation.dart';
-import '../../../../../utils/constants/mediaQuery.dart';
+import '../../../../utils/constants/mediaQuery.dart';
 
 class MethodEmail extends StatelessWidget {
   const MethodEmail({Key? key});
