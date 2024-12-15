@@ -27,7 +27,7 @@ class TElevatedButtonTheme {
         ),
         foregroundColor: Colors.white,
         backgroundColor: TColors.appPrimaryColor,
-        side: const BorderSide(color: TColors.appSecondaryColor),
+        side: const BorderSide(color: TColors.grey),
         padding: const EdgeInsets.symmetric(vertical: 5),
         textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
   );

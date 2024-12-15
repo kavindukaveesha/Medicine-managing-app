@@ -1,51 +1,42 @@
+class Validator {
+  static bool isValidEmail(String email) {
+    final RegExp emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    return emailRegex.hasMatch(email);
+  }
 
+  static String? validFullName(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your Full name';
+    }
+    return null;
+  }
 
-class TValidator {
   static String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Email is required';
+      return 'Please enter your email';
     }
-
-    // Regular expression for email validation
-    final emailRegExp = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-
-    if (!emailRegExp.hasMatch(value)) {
-      return 'Invalid email address';
+    if (!isValidEmail(value)) {
+      return 'Please enter a valid email';
     }
     return null;
   }
 
   static String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Password is required';
+      return 'Please enter your password';
     }
-
-    // Check for minimum password length
     if (value.length < 6) {
-      return 'Password must be at least 6 characters long';
-    }
-
-    // Check for special characters
-    if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-      return 'Password must contain at least one special characters';
+      return 'Password should be minimum 6 characters';
     }
     return null;
   }
-
-  static String? validatePhoneNumber(String? value) {
-    if(value == null || value.isEmpty) {
-      return 'Phone number is required';
+ static String? communValidete(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter a value';
     }
-
-    // Regular expression for phone number validation (assuming a 10 digits US phone number format)
-    final phoneRegExp = RegExp(r'^\d{10}$');
-
-    if (!phoneRegExp.hasMatch(value)) {
-      return 'Invalid phone number format (10 digits required)';
+    if (!isValidEmail(value)) {
+      return 'Please enter a valid email';
     }
     return null;
   }
-
-
-
 }

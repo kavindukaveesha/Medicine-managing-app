@@ -4,11 +4,14 @@ class Dropdown1 extends StatefulWidget {
   const Dropdown1({
     Key? key,
     required this.listName,
-    required this.selectedItem,
+    this.validator,
+    required this.onItemSelected, // Add the onItemSelected callback
   }) : super(key: key);
 
   final List<String> listName;
-  final String selectedItem;
+  final String? Function(String?)? validator;
+  final void Function(String)?
+      onItemSelected; // Define the onItemSelected callback
 
   @override
   _Dropdown1State createState() => _Dropdown1State();
@@ -20,33 +23,41 @@ class _Dropdown1State extends State<Dropdown1> {
   @override
   void initState() {
     super.initState();
-    _selectedItem = widget.selectedItem; // Initialize the new variable
+    _selectedItem = widget.listName[
+        0]; // Initialize the selected item with the first item in the list
   }
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButtonFormField<String>(
-      decoration: InputDecoration(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: DropdownButtonFormField<String>(
+        decoration: InputDecoration(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          filled: true,
+          fillColor: Colors.transparent,
         ),
+        validator: widget.validator,
+        value: _selectedItem,
+        items: widget.listName.map((category) {
+          return DropdownMenuItem<String>(
+            value: category,
+            child: Text(
+              category,
+              style: TextStyle(color: Colors.black),
+            ),
+          );
+        }).toList(),
+        onChanged: (value) {
+          setState(() {
+            _selectedItem = value!;
+          });
+          widget.onItemSelected?.call(
+              value!); // Call the onItemSelected callback with the selected value
+        },
       ),
-      value: _selectedItem,
-      items: widget.listName.map((category) {
-        return DropdownMenuItem<String>(
-          value: category,
-          child: Text(category),
-        );
-      }).toList(),
-      onChanged: (value) {
-        // // Call the callback function provided in the widget with the selected value
-        // widget.onItemSelected(value!);
-        // // Update the selected category within the widget
-        setState(() {
-          _selectedItem = value!;
-        });
-        print(_selectedItem);
-      },
     );
   }
 }

@@ -1,28 +1,24 @@
 import 'package:flutter/material.dart';
 
-class Daypicker extends StatefulWidget {
-  const Daypicker({
+class DayPickerDropdown extends StatefulWidget {
+  DayPickerDropdown({
     Key? key,
     required this.listName,
-    required this.selectedItem,
+    required this.onDaySelected,
+    this.selectedItem,
+    // New property for the callback function
   }) : super(key: key);
 
   final List<String> listName;
-  final String selectedItem;
+  final Function(DateTime) onDaySelected;
+
+  String? selectedItem; // Change to nullable String
 
   @override
-  _DaypickerState createState() => _DaypickerState();
+  _DayPickerDropdownState createState() => _DayPickerDropdownState();
 }
 
-class _DaypickerState extends State<Daypicker> {
-  late String _selectedItem;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedItem = widget.selectedItem;
-  }
-
+class _DayPickerDropdownState extends State<DayPickerDropdown> {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonHideUnderline(
@@ -36,11 +32,18 @@ class _DaypickerState extends State<Daypicker> {
           icon: Icon(Icons.keyboard_arrow_down),
           iconEnabledColor: Colors.black,
           iconSize: 30,
-          value: _selectedItem,
-          style: Theme.of(context).textTheme.headlineMedium,
-          onChanged: (value) {
+          value: widget.selectedItem,
+          style: Theme.of(context)
+              .textTheme
+              .headlineMedium, // Use headline6 instead of headlineMedium
+          onChanged: (newValue) {
             setState(() {
-              _selectedItem = value!;
+              widget.selectedItem = newValue;
+              // Get the DateTime object for the selected day
+              DateTime selectedDate =
+                  _getDateForDay(newValue!); // Remove null check
+              // Call the callback function with the selected date
+              widget.onDaySelected(selectedDate);
             });
           },
           items: widget.listName.map((category) {
@@ -52,5 +55,17 @@ class _DaypickerState extends State<Daypicker> {
         ),
       ),
     );
+  }
+
+  // Function to get the DateTime object for the selected day
+  DateTime _getDateForDay(String day) {
+    // Get the index of the selected day in the list
+    int index = widget.listName.indexOf(day);
+    // Get the current date
+    DateTime currentDate = DateTime.now();
+    // Calculate the difference in days between the current day and the selected day
+    int difference = index - currentDate.weekday;
+    // Add the difference to the current date to get the selected date
+    return currentDate.add(Duration(days: difference));
   }
 }

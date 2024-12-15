@@ -1,192 +1,162 @@
-// import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:medicinapp/features/authentication/screens/log_in_screen/log_in_screen.dart';
+import 'package:medicinapp/features/authentication/screens/verify_screen/verify_main_screen.dart';
+import 'package:medicinapp/utils/validators/validation.dart';
 
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:firebase_storage/firebase_storage.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
+import '../../../common/custom_shape/widgets/snack_bar/snack_bar.dart';
+import '../../../utils/constants/colors.dart';
 
-// import '../../../common/custom_shape/widgets/snack_bar/snack_bar.dart';
-// import '../../../utils/constants/colors.dart';
-// import '../screens/logIn_screen/login_main.dart';
-// import '../screens/verify_screen/verify_main_screen.dart';
+class SignUpController extends GetxController {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-// class SignUpController extends GetxController {
-//   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-//   final FirebaseAuth _auth = FirebaseAuth.instance;
+  Future<void> register(
+    String fullName,
+    String email,
+    String password,
+    String gender,
+    String age,
+    String language,
+    String country,
+    BuildContext context,
+  ) async {
+    if (formKey.currentState!.validate()) {
+      formKey.currentState!.save();
+      try {
+        UserCredential userCredential =
+            await _auth.createUserWithEmailAndPassword(
+          email: email.trim(),
+          password: password.trim(), // Fixed variable name
+        );
+        addUser(fullName, email, language, country, gender, age);
+        SnackbarHelper.showSnackbar(
+          title: 'Success',
+          message: 'You have successfully signed up. Please proceed to login.',
+          backgroundColor: TColors.appPrimaryColor,
+        );
+      } catch (e) {
+        SnackbarHelper.showSnackbar(
+          title: 'Error',
+          message: e.toString(),
+          backgroundColor: Colors.red,
+        );
+      }
+    } else {
+      SnackbarHelper.showSnackbar(
+        title: 'Error',
+        message: 'Please fill all inputs',
+        backgroundColor: Colors.red,
+      );
+    }
+  }
 
-//   Future<void> register(
-//       String firstName,
-//       String lastName,
-//       String email,
-//       String mobile,
-//       String address,
-//       String passsword,
-//       String conformPassword,
-//       BuildContext context) async {
-//     if (formKey.currentState!.validate()) {
-//       formKey.currentState!.save();
-//       if (passsword.trim() == conformPassword.trim()) {
-//         try {
-//           UserCredential userCredential =
-//               await _auth.createUserWithEmailAndPassword(
-//             email: email.trim(),
-//             password: passsword.trim(),
-//           );
-//           await sendVerificationEmail(userCredential.user!);
-//           String? imageUrl = await getImageURL();
-//           await addUser(
-//             firstName.trim(),
-//             lastName.trim(),
-//             email.trim(),
-//             int.parse(mobile), // Convert mobile to int
-//             address.trim(),
-//             imageUrl,
-//           );
-//           SnackbarHelper.showSnackbar(
-//             title: 'Verify User',
-//             message: 'Going to Verification page',
-//             backgroundColor: TColors.appPrimaryColor,
-//           );
-//           Future.delayed(const Duration(seconds: 1), () {
-//             navigateToNextScreen(context);
-//           });
-//         } catch (e) {
-//           SnackbarHelper.showSnackbar(
-//             title: 'Error',
-//             message: e.toString(),
-//             backgroundColor: Colors.red,
-//           );
-//         }
-//       } else {
-//         SnackbarHelper.showSnackbar(
-//           title: 'Error',
-//           message: 'Password and confirm password do not match',
-//           backgroundColor: Colors.red,
-//         );
-//       }
-//     } else {
-//       SnackbarHelper.showSnackbar(
-//         title: 'Error',
-//         message: 'Please fill all inputs',
-//         backgroundColor: Colors.red,
-//       );
-//     }
-//   }
+  Future<void> addUser(
+    String fullName,
+    String email,
+    String language,
+    String country,
+    String gender,
+    String age,
+  ) async {
+    await FirebaseFirestore.instance.collection('app_user').doc(email).set({
+      'Full Name': fullName,
+      'Email': email,
+      'Age': age,
+      'Gender': gender,
+      'Language': language,
+      'Country': country,
+    });
+  }
 
-//   Future<String?> getImageURL() async {
-//     final ref = FirebaseStorage.instance.ref().child('profile_images/user.png');
-//     String downloadUrl = await ref.getDownloadURL();
-//     return downloadUrl;
-//   }
+ Future<void> sendVerificationEmail(
+  String fullName,
+  String email,
+  String password,
+  String language,
+  String country,
+  String gender,
+  String age,
+  BuildContext context,
+) async {
+  // Check email format
+  if (Validator.isValidEmail(email)) {
+    // ActionCodeSettings initialization
+    var acs = ActionCodeSettings(
+      url: email,
+      handleCodeInApp: true,
+      iOSBundleId: 'com.example.ios',
+      androidPackageName: 'com.example.android',
+      androidInstallApp: true,
+      androidMinimumVersion: '12',
+    );
 
-//   Future<void> addUser(
-//     String firstName,
-//     String lastName,
-//     String email,
-//     int mobile,
-//     String address,
-//     String? imgUrl,
-//   ) async {
-//     await FirebaseFirestore.instance.collection('AppUser').doc(email).set({
-//       'first_name': firstName,
-//       'last_name': lastName,
-//       'mobile': mobile,
-//       'email': email,
-//       'address': address,
-//       'imgUrl': imgUrl
-//     });
-//   }
+    // Send verification email
+    await FirebaseAuth.instance
+        .sendSignInLinkToEmail(email: email, actionCodeSettings: acs)
+        .then((_) {
+      SnackbarHelper.showSnackbar(
+        title: 'Success!',
+        message:
+            'Verification email sent. Please verify your email to complete registration.',
+      );
+      // Navigate to verification screen
+      Future.delayed(const Duration(seconds: 1), () {
+        Get.offAll(() => VerificationScreen(
+              fullName: fullName,
+              email: email,
+              password: password,
+              gender: gender,
+              age: age,
+              language: language,
+              country: country,
+              context: context,
+            ));
+      });
+    }).catchError((error) {
+      // Handle error
+      SnackbarHelper.showSnackbar(
+        title: 'Error',
+        message: error.toString(),
+        backgroundColor: Colors.red,
+      );
+    });
+  } else {
+    // Show error message for invalid email format
+    SnackbarHelper.showSnackbar(
+      title: 'Error',
+      message: 'Email is not in correct format',
+      backgroundColor: Colors.red,
+    );
+  }
+}
 
-//   Future<void> sendVerificationEmail(User user) async {
-//     if (!user.emailVerified) {
-//       await user.sendEmailVerification();
-//       print('Verification email sent');
-//     }
-//   }
+  Future<void> verifyUser(
+      String fullName,
+      String email,
+      String gender,
+      String age,
+      String language,
+      String country,
+      String password,
+      BuildContext context) async {
+    await FirebaseAuth.instance.currentUser!.reload();
 
-//   Future<void> navigateToNextScreen(BuildContext context) async {
-//     SharedPreferences prefs = await SharedPreferences.getInstance();
-//     prefs.setBool('firstTimeLogin', false);
-//     Get.to(() => const VerificationScreen());
-//   }
+    if (FirebaseAuth.instance.currentUser!.emailVerified) {
+      register(
+          fullName, email, password, gender, age, language, country, context);
 
-//   // Verify User
-//   Future<void> verifyUser() async {
-//     // Reload the user data to ensure the latest verification status
-//     await FirebaseAuth.instance.currentUser!.reload();
-
-//     // Check if the email is verified
-//     if (FirebaseAuth.instance.currentUser!.emailVerified) {
-//       SnackbarHelper.showSnackbar(
-//         title: 'Success',
-//         message: 'You have successfully signed up. Please proceed.',
-//         backgroundColor: TColors.appPrimaryColor,
-//       );
-
-//       // Navigate to the login screen after a delay
-//       Future.delayed(const Duration(seconds: 1), () {
-//         Get.offAll(() => const LogIn());
-//       });
-//     } else {
-//       // User has not verified the email
-//       Get.snackbar('Info', 'Please verify your email to continue',
-//           backgroundColor: Colors.red);
-//     }
-//   }
-
-//   bool isValidEmail(String email) {
-//     final RegExp emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-//     return emailRegex.hasMatch(email);
-//   }
-
-//   String? validateFirstName(String? value) {
-//     if (value == null || value.isEmpty) {
-//       return 'Please enter your first name';
-//     }
-//     return null;
-//   }
-
-//   String? validateLastName(String? value) {
-//     if (value == null || value.isEmpty) {
-//       return 'Please enter your Last name';
-//     }
-//     return null;
-//   }
-
-//   String? validateEmail(String? value) {
-//     if (value == null || value.isEmpty) {
-//       return 'Please enter your email';
-//     }
-//     if (!isValidEmail(value)) {
-//       return 'Please enter Valid email';
-//     }
-//     return null;
-//   }
-
-//   String? validateMobileNumber(String? value) {
-//     if (value == null || value.isEmpty) {
-//       return 'Please enter your Mobile Number';
-//     }
-
-//     return null;
-//   }
-
-//   String? validateAddress(String? value) {
-//     if (value == null || value.isEmpty) {
-//       return 'Please enter your Address';
-//     }
-//     return null;
-//   }
-
-//   String? validatePassword(String? value) {
-//     if (value == null || value.isEmpty) {
-//       return 'Please enter your Last name';
-//     }
-//     if (value.length < 6) {
-//       return 'Password Should be minimum 6 digits';
-//     }
-//     return null;
-//   }
-// }
+      Future.delayed(const Duration(seconds: 1), () {
+        Get.offAll(() => const LogInScreen());
+      });
+    } else {
+      Get.snackbar(
+        'Info',
+        'Please verify your email to complete registration',
+        backgroundColor: Colors.red,
+      );
+    }
+  }
+}

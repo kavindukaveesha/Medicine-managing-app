@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:medicinapp/features/pages/screens/home_page/home_page.dart';
 
 import '../../../common/custom_shape/widgets/snack_bar/snack_bar.dart';
 import '../../../utils/constants/colors.dart';
-
 
 class SignInController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -22,7 +22,7 @@ class SignInController extends GetxController {
           backgroundColor: TColors.appPrimaryColor);
       // Redirect to another page after 3 seconds
       Future.delayed(const Duration(seconds: 2), () {
-        // Get.offAll(() => const NavigationMenu());
+        Get.offAll(() => const HomePage());
       });
     } on FirebaseAuthException catch (e) {
       String errorMessage = 'An error occurred.';

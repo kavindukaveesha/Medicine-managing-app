@@ -9,12 +9,14 @@ class DataDisplayCard extends StatelessWidget {
     super.key,
     required this.labelText,
     required this.detailtext,
-    required this.onTapEdit,
     this.height,
+    this.edit,
+    this.onTapEdit,
   });
   final String labelText;
   final String detailtext;
-  final VoidCallback onTapEdit;
+  final String? edit;
+  final VoidCallback? onTapEdit;
   final double? height;
 
   @override
@@ -22,14 +24,9 @@ class DataDisplayCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
       child: Container(
-        width: MediaQueryUtils.getWidth(context) * .8,
+        width: MediaQueryUtils.getWidth(context) * .9,
         height: height,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(14), // Fix border radius to 14
-          border: Border.all(
-            color: Colors.grey, // Set border color to grey
-            style: BorderStyle.solid,
-          ),
           color: Colors.transparent,
         ),
         child: Padding(
@@ -50,8 +47,8 @@ class DataDisplayCard extends StatelessWidget {
                     ),
                     GestureDetector(
                         onTap: onTapEdit,
-                        child: const Text(
-                          'Edit',
+                        child: Text(
+                          edit ?? '',
                           style: TextStyle(
                               fontSize: 15,
                               color: TColors.appPrimaryColor,
